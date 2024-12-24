@@ -11,21 +11,21 @@ document.getElementById('sendButton').addEventListener('click', async () => {
 
   try {
     const response = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAiiL6_B1KxAsbqfRseqCLyAYxG6mrvwk8', 
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAiiL6_B1KxAsbqfRseqCLyAYxG6mrvwk8',
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           contents: [
             {
               parts: [
-                { text: userInput }
-              ]
-            }
-          ]
-        })
+                { text: userInput },
+              ],
+            },
+          ],
+        }),
       }
     );
 
@@ -34,8 +34,14 @@ document.getElementById('sendButton').addEventListener('click', async () => {
     }
 
     const data = await response.json();
-    const output = data.contents[0]?.parts.map(part => part.text).join(' ') || 'Sem resposta';
-    responseContainer.innerHTML = `<p>${output}</p>`;
+
+    // Verifique se `contents` e `parts` existem
+    if (data.contents && data.contents[0] && data.contents[0].parts) {
+      const output = data.contents[0].parts.map(part => part.text).join(' ');
+      responseContainer.innerHTML = `<p>${output}</p>`;
+    } else {
+      responseContainer.innerHTML = '<p>Sem resposta válida da API.</p>';
+    }
   } catch (error) {
     responseContainer.innerHTML = `<p>Erro: ${error.message}</p>`;
   }
